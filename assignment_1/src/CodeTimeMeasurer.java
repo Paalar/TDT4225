@@ -8,7 +8,7 @@ public class CodeTimeMeasurer {
             System.out.println(e.getMessage());
         }
         long endTime = System.nanoTime();
-        System.out.println(String.format("Start time: %d\nEnd time: %d", startTime, endTime));
+        System.out.println(String.format("Start time of function: %d\nEnd time of function: %d", startTime, endTime));
         return (endTime - startTime);
     }
 

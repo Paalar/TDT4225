@@ -39,7 +39,7 @@ public class Write {
             long time = executedTime.get(index);
             long fileSize = (fileSizes[index] * 1024 * 1024);
             long throughput = (fileSize / TimeUnit.NANOSECONDS.toMillis(time));
-            System.out.print(String.format("The time for %d GB was %d ms, and the throughput is MB/s %d\n",
+            System.out.print(String.format("The time for %d GB was %d ms, and the write throughput is MB/s %d\n",
                     fileSizes[index], TimeUnit.NANOSECONDS.toMillis(time), throughput));
         }
     }
