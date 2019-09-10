@@ -9,40 +9,27 @@ import static java.nio.file.StandardOpenOption.APPEND;
 import static java.nio.file.StandardOpenOption.CREATE;
 
 public class Write {
-
-    private static final int BLOCKSIZE = 8192;
-    private static final long NBLOCKS = 131072;
-
     private static final int[] fileSizes = {1, 2, 4, 8, 16, 32};
     private static List<Long> executedTime = new ArrayList<>();
 
-    private static void writeFile(long fileSize) throws IOException {
-        Path file = Paths.get(System.getProperty("user.dir"), "myjavadata");
+    private final static int BLOCK_SIZE = BlockSize.BLOCK_SIZE.getBlock();
+    private final static int N_BLOCKS = BlockSize.N_BLOCKS.getBlock();
+
+    private static void writeFile(long fileSize, String filename) throws IOException {
+        Path file = Paths.get(System.getProperty("user.dir"), filename);
         SeekableByteChannel out = Files.newByteChannel(file, EnumSet.of(CREATE, APPEND));
 
-        for (int i = 1; i < fileSize * NBLOCKS; i++) {
-            ByteBuffer buffer = ByteBuffer.allocate(BLOCKSIZE);
+        for (int i = 1; i < fileSize * N_BLOCKS ; i++) {
+            ByteBuffer buffer = ByteBuffer.allocate(BLOCK_SIZE);
             out.write(buffer);
         }
     }
 
-    private static long measureTimeOfFunction(Runnable code) {
-        long startTime = System.nanoTime();
-        try {
-            code.run();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-        long endTime = System.nanoTime();
-        System.out.println(String.format("Start time: %d\nEnd time: %d", startTime, endTime));
-        return (endTime - startTime);
-    }
-
     public static void main(String[] args) {
         for (int fileSize : fileSizes) {
-            executedTime.add(measureTimeOfFunction(() -> {
+            executedTime.add(CodeTimeMeasurer.measureTimeOfFunction(() -> {
                 try {
-                    writeFile(fileSize);
+                    writeFile(fileSize, String.format("filesize_%d_gig", fileSize));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -56,5 +43,4 @@ public class Write {
                     fileSizes[index], TimeUnit.NANOSECONDS.toMillis(time), throughput));
         }
     }
-
 }
